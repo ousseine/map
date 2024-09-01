@@ -1,3 +1,26 @@
 body {
     background-color: skyblue;
 }
+
+#map {
+    position: relative;
+}
+
+.leaflet-control-geosearch button.reset {
+    color: #000;
+    font-weight: 700;
+    position: absolute;
+    line-height: 26px;
+    padding: 0 8px;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    background-color: #fff;
+    border-radius: 0 4px 4px 0;
+}
+
+/*.leaflet-marker-icon {*/
+/*    margin-top: -38.5px !important;*/
+/*}*/
