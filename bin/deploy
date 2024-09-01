@@ -1,0 +1,2 @@
+#!/bin/sh
+rsync -av -e "ssh -p 65002" --include=public/build --exclude-from=.gitignore --exclude=".*" ./ u351953825@154.49.245.241:~/domains/ousseine.site/public_html/map.site

@@ -21,7 +21,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 const markerIcon = L.icon({
-    iconUrl: 'images/marker-icon.png',
+    iconUrl: 'marker-icon.png',
     iconSize: [38, 41]
 })
 const provider = new OpenStreetMapProvider();
@@ -37,85 +37,96 @@ const searchControl = new GeoSearchControl({
 
 map.addControl(searchControl)
 
-const moveMarker = (lat, lng, marker) => {
+let marker;
+
+map.on('geosearch/showlocation', (result) => {
+    marker = result.marker
+})
+
+function getMarker(lat, lng) {
+    marker = L.marker([lat, lng], {
+        icon: markerIcon,
+        draggable: true,
+        title: 'salut les gens'
+    }).addTo(map)
+
+    console.log(marker)
+
+    // TODO :: Ajouter les infos dans le marker si on le clique et ne rien faire
+}
+
+map.on('click', e => {
+    if (bounds.contains(e.latlng)) {
+        let lat = e.latlng.lat
+        let lng = e.latlng.lng
+
+        if (marker) {
+            // Supprimer le marker
+            map.removeLayer(marker)
+
+            // Créer un nouveau marker
+            getMarker(lat, lng)
+        } else {
+            // Créer un marker
+            getMarker(lat, lng)
+        }
+    }
+})
+
+
+// Supprimer le marker si on clique sur le bouton close
+document.querySelector('form').querySelector('button').addEventListener('click', e => {
     if (marker) {
         map.removeLayer(marker)
     }
-
-    // Nouveau marker
-    const newMarker = L.marker([lat, lng], {
-        icon: markerIcon,
-        draggable: true
-    })
-    newMarker.addTo(map)
-
-    // Centrer la carte
-    map.setView([lat, lng], 14)
-
-    newMarker.on('moveend', e => {
-        const { lat, lng } = e.target.getLatLng()
-
-        console.log(lat, lng)
-    })
-}
-
-map.on('geosearch/showlocation', (result) => {
-    
-    const lat = result.location.y
-    const lng = result.location.x
-    
-    // Déplacer le marker
-    map.on('click', (e) => moveMarker(lat, lng, result.marker))
 })
 
 
 
+
+// const moveMarker = (lat, lng, marker) => {
+//     if (marker) {
+//         map.removeLayer(marker)
+//     }
+//
+//     // Nouveau marker
+//     const newMarker = L.marker([lat, lng], {
+//         icon: markerIcon,
+//         draggable: true
+//     })
+//     newMarker.addTo(map)
+//
+//     // Centrer la carte
+//     map.setView([lat, lng], 14)
+//
+//     newMarker.on('moveend', e => {
+//         const { lat, lng } = e.target.getLatLng()
+//
+//         console.log(lat, lng)
+//     })
+// }
+
 // let marker = null;
 
 // Trouvé vos coordonnées à l'aide du double click
-map.on('click', e => {
-    if (bounds.contains(e.latlng)) {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-
-        const marker = L.marker([lat, lng])
-
-        if (bounds.contains(L.latLng(lat, lng))) {
-            if (marker) {
-                map.removeLayer(marker)
-            }
-
-            L.marker([lat, lng]).addTo(map)
-            map.setView([lat, lng], 14)
-
-            console.log(lat, lng);
-        } else {
-            alert('La localisation recherchée est en dehors de la France.')
-        }
-    }
-});
-
-
-// Récupère la marker
-// const getMarker = (lat, lng, marker) => {
-//     // const mapIcon = L.icon({
-//     //     iconUrl: 'images/marker-icon.png',
-//     //     iconSize: [38, 41],
-//     // });
+// map.on('click', e => {
+//     if (bounds.contains(e.latlng)) {
+//         const lat = e.latlng.lat;
+//         const lng = e.latlng.lng;
 //
-//     const newLatLng = L.latLng(lat, lng)
+//         const marker = L.marker([lat, lng])
 //
-//     // Vérifier si les coordonnées recherchées sont en dehors de la France
-//     if (bounds.contains(newLatLng)) {
-//         if (marker) {
-//             map.removeLayer(marker)
+//         if (bounds.contains(L.latLng(lat, lng))) {
+//             if (marker) {
+//                 map.removeLayer(marker)
+//             }
+//
+//             L.marker([lat, lng]).addTo(map)
+//             map.setView([lat, lng], 14)
+//
+//             console.log(lat, lng);
+//         } else {
+//             alert('La localisation recherchée est en dehors de la France.')
 //         }
-//
-//         marker = L.marker([lat, lng]).addTo(map)
-//         map.setView([lat, lng], 14)
-//
-//         console.log(lat, lng);
-//     } else {
-//         alert('La localisation recherchée est en dehors de la France.')
 //     }
-// }
+// });
